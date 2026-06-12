@@ -31,6 +31,10 @@ export interface Pilgrim {
   visaStatus: VisaStatus;
   biometricStatus: 'Pending' | 'Scheduled' | 'Completed';
   visaExpiryDate?: string; // e.g. "2026-07-10"
+  passportPdfUrl?: string;
+  passportPdfName?: string;
+  visaPdfUrl?: string;
+  visaPdfName?: string;
   userId: string; // Isolated associated owner ID
   createdAt: string;
   updatedAt: string;

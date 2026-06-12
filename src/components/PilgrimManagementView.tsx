@@ -527,6 +527,36 @@ export default function PilgrimManagementView({
                           KK
                         </button>
                       </div>
+                      {(p.passportPdfUrl || p.visaPdfUrl) && (
+                        <div className="flex items-center justify-center gap-1.5 mt-1.5">
+                          {p.passportPdfUrl && (
+                            <a 
+                              href={p.passportPdfUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              title={`View Attached Passport: ${p.passportPdfName || 'Passport.pdf'}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-850 rounded font-mono text-[7.5px] font-extrabold uppercase transition-all"
+                            >
+                              <FileText className="w-2.5 h-2.5 text-emerald-600" />
+                              PAS PDF
+                            </a>
+                          )}
+                          {p.visaPdfUrl && (
+                            <a 
+                              href={p.visaPdfUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              title={`View Attached Visa: ${p.visaPdfName || 'Visa.pdf'}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-850 rounded font-mono text-[7.5px] font-extrabold uppercase transition-all"
+                            >
+                              <FileText className="w-2.5 h-2.5 text-indigo-600" />
+                              VISA PDF
+                            </a>
+                          )}
+                        </div>
+                      )}
                     </td>                     {/* Visa Lifecycle status tracker */}
                     <td className="text-center">
                       <button
