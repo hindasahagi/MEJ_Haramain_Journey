@@ -1,0 +1,82 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reuseable primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Helper to validate email verification
+    function isVerifiedUser() {
+      return isSignedIn() && (request.auth.token.email_verified == true || request.auth.uid != null);
+    }
+
+    // 2. Pilgrims rules
+    match /pilgrims/{pilgrimId} {
+      allow get: if isVerifiedUser() && existing().userId == request.auth.uid;
+      allow list: if isVerifiedUser() && resource.data.userId == request.auth.uid;
+      
+      allow create: if isVerifiedUser() &&
+        isValidId(pilgrimId) &&
+        incoming().userId == request.auth.uid &&
+        incoming().fullName is string && incoming().fullName.size() <= 150 &&
+        incoming().passportNumber is string && incoming().passportNumber.size() <= 32 &&
+        incoming().createdAt == request.time;
+
+      allow update: if isVerifiedUser() &&
+        existing().userId == request.auth.uid &&
+        incoming().userId == request.auth.uid &&
+        incoming().fullName is string && incoming().fullName.size() <= 150 &&
+        incoming().updatedAt == request.time;
+
+      allow delete: if isVerifiedUser() && existing().userId == request.auth.uid;
+    }
+
+    // 3. Activities rules
+    match /activities/{activityId} {
+      allow get, list: if isVerifiedUser() && resource.data.userId == request.auth.uid;
+      
+      allow create: if isVerifiedUser() &&
+        isValidId(activityId) &&
+        incoming().userId == request.auth.uid &&
+        incoming().title is string && incoming().title.size() <= 200 &&
+        incoming().createdAt == request.time;
+
+      allow update, delete: if isVerifiedUser() && existing().userId == request.auth.uid;
+    }
+
+    // 4. Syarikah Reports rules
+    match /syarikah_reports/{reportId} {
+      allow read: if isVerifiedUser();
+      allow write: if isVerifiedUser();
+    }
+
+    // 5. Users rules
+    match /users/{userId} {
+      allow get: if isVerifiedUser() && userId == request.auth.uid;
+      allow create, update: if isVerifiedUser() && userId == request.auth.uid &&
+        incoming().uid == userId &&
+        incoming().email is string &&
+        incoming().role is string &&
+        incoming().name is string;
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Pilgrim": {
+      "title": "Pilgrim",
+      "description": "Pilgrim profile details, scheduling, visa statuses, and document uploads",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customId": { "type": "string" },
+        "fullName": { "type": "string" },
+        "passportNumber": { "type": "string" },
+        "nationality": { "type": "string" },
+        "gender": { "type": "string", "enum": ["Male", "Female"] },
+        "dob": { "type": "string", "format": "date" },
+        "vfsCenter": { "type": "string" },
+        "preferredDate": { "type": "string", "format": "date" },
+        "preferredTime": { "type": "string", "enum": ["Morning", "Afternoon"] },
+        "quotaStatus": { "type": "string", "enum": ["ready", "pending"] },
+        "visaBatch": { "type": "string" },
+        "ktpStatus": { "type": "string", "enum": ["Uploaded", "Review", "Missing"] },
+        "passportStatus": { "type": "string", "enum": ["Uploaded", "Review", "Missing"] },
+        "photoStatus": { "type": "string", "enum": ["Uploaded", "Review", "Missing"] },
+        "kkStatus": { "type": "string", "enum": ["Uploaded", "Review", "Missing"] },
+        "visaStatus": { "type": "string", "enum": ["Stamped", "Processed", "Requesting", "Pending", "Rejected"] },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["fullName", "passportNumber", "userId"]
+    },
+    "Activity": {
+      "title": "Activity",
+      "description": "Log of recent system activities, uploads, visa approvals, and sync events",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["document", "visa", "biometric", "system"] },
+        "timestamp": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "userId": { "type": "string" }
+      },
+      "required": ["title", "description", "userId"]
+    },
+    "SyarikahReport": {
+      "title": "SyarikahReport",
+      "description": "Syarikah visa reports and allocation tracks",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "sponsorId": { "type": "string" },
+        "visaNo": { "type": "string" },
+        "qtyMale": { "type": "integer" },
+        "qtyFemale": { "type": "integer" },
+        "usedMale": { "type": "integer" },
+        "usedFemale": { "type": "integer" },
+        "availMale": { "type": "integer" },
+        "availFemale": { "type": "integer" },
+        "sourcing": { "type": "string" }
+      },
+      "required": ["name", "sponsorId", "visaNo"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile with administrative metadata and assigned system role",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "name", "role"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Administrative manager profiles and permissions"
+    },
+    "/pilgrims/{pilgrimId}": {
+      "schema": { "$ref": "#/entities/Pilgrim" },
+      "description": "User specific real-time synchronized collection of pilgrims under management"
+    },
+    "/activities/{activityId}": {
+      "schema": { "$ref": "#/entities/Activity" },
+      "description": "Log stream of timeline audits for the system dashboard"
+    },
+    "/syarikah_reports/{reportId}": {
+      "schema": { "$ref": "#/entities/SyarikahReport" },
+      "description": "Reports detailing syarikah visa quotas and batch assignments"
+    }
+  }
+}

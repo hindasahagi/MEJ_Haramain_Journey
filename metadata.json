@@ -1,0 +1,6 @@
+{
+  "name": "MEJ Sacred Journey",
+  "description": "Pilgrimage Management System for tracking pilgrims, passports, biometric VFS schedules, and visa requirements securely in real-time.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
